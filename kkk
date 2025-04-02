@@ -1,0 +1,1 @@
+{"size": 3, "grid": [["X", "X", "X"], ["O", "O", " "], [" ", " ", " "]], "current_player_index": 0, "moves": 5, "players": [{"name": "rgh", "symbol": "X", "wins": 1}, {"name": "eee", "symbol": "O", "wins": 0}]}
