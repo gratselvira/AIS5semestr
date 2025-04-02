@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Мои достижения</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .nav {
+            background-color: #e0e0e0;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            display: inline;
+            margin-right: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+        }
+
+        .nav-link.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        .filter {
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .achievement {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .achievement b {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .sort {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <ul>
+                <li class="nav-item">
+                    {% url 'home' as url_home %}
+                    <a class="nav-link {% if url_home == request.path %} active {% endif %}" href="{{url_home}}">Главная</a>
+                </li>
+                <li class="nav-item">
+                    {% url 'edit_page' as url_edit_page %}
+                    <a class="nav-link {% if url_edit_page == request.path %} active {% endif %}" href="{{url_edit_page}}">Создание/ред/удал</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="nav-link" type="submit">Выход</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        {% url 'login_page' as url_login_page %}
+                        <a class="nav-link {% if url_login_page == request.path %} active {% endif %}" href="{{url_login_page}}">Авторизация</a>
+                    </li>
+                    <li class="nav-item">
+                        {% url 'register_page' as url_register_page %}
+                        <a class="nav-link {% if url_register_page == request.path %} active {% endif %}" href="{{url_register_page}}">Регистрация</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        {% block content %}
+        <h1>Достижения</h1>
+
+        {% if request.path == '/' %}
+        <div class="filter">
+            <span>Фильтрация: </span>
+            <a href="?filter=date">По дате создания</a><span class="sort">&#8595;</span>
+            <a href="?filter=title">По заголовку</a><span class="sort">&#8595;</span>
+            <a href="{% url 'home' %}">Сбросить фильтры</a>
+        </div>
+        {% endif %}
+
+        {% for i in list_articles %}
+        <div class="achievement">
+            <b>{{i.create_date}}</b>
+            <span>{{i.name}}</span>
+            <span>{{i.text}}</span>
+            <span style="float:right;"><a href="/detail/{{i.id}}">перейти к статье</a></span>
+        </div>
+        {% endfor %}
+        {% endblock %}
+    </div>
+</body>
+</html>
+
+

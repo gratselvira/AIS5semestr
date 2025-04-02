@@ -1,0 +1,44 @@
+{% extends 'index.html' %}
+{% block title %}Детали достижения{% endblock %}
+
+{% block content %}
+<p><a href='/'>Вернуться назад</a></p>
+<p>Дата создания: {{ get_article.create_date }}</p>
+<p>Название: {{ get_article.name }}</p>
+<p>Текст: {{ get_article.text }}</p>
+
+<!-- Отображение количества лайков -->
+<p>Лайки: {{ get_article.like_set.count }}</p>
+
+<!-- Форма для лайка -->
+{% if request.user.is_authenticated %}
+<form method="post" action="{% url 'like_article' get_article.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Понравилось</button>
+</form>
+{% else %}
+<p>Чтобы поставить лайк, <a href="{% url 'login_page' %}">войдите в систему</a>.</p>
+{% endif %}
+
+<hr>
+<p>Комментарии ({{ get_article.comments_articles.count }})</p>
+<ul>
+    {% for item in get_article.comments_articles.all %}
+    <li>
+        Дата написания: {{ item.create_date }}<br>
+        Автор: {{ item.author }}<br>
+        {{ item.text }}
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="col-4">
+    <h3>Добавить комментарий</h3>
+    <form id='add_form' method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+</div>
+{% endblock %}
+

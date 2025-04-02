@@ -1,0 +1,88 @@
+{% extends 'index.html' %}
+{% block content %}
+<h1 class="mt-4">Админ панель</h1>
+
+<!-- Кнопка-триггер модального окна для добавления нового достижения -->
+<button type="button" class="btn btn-primary" id="openModalBtn">
+    Добавить новое достижение
+</button>
+
+{% if success %}
+<p style="color:red">Запись добавлена</p>
+{% endif %}
+
+{% if update %}
+    {% if success_update %}
+    <p style="color:red">Данные обновлены</p>
+    {% endif %}
+    <p>Страница редактирования</p>
+    <p><a href="{% url 'edit_page' %}">Вернуться назад</a></p>
+{% endif %}
+
+<!-- Таблица достижений -->
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Дата создания</th>
+            <th scope="col">Название</th>
+            <th scope="col">Редактирование</th>
+            <th scope="col">Удаление</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in list_articles %}
+        <tr>
+            <th>{{ i.id }}</th>
+            <td>{{ i.create_date|date:'d.m.Y' }} - {{ i.author }}</td>
+            <td>{{ i.name }}</td>
+            <td><a href="{% url 'update_page' i.id %}">Редактировать</a></td>
+            <td><a href="{% url 'delete_page' i.id %}">Удалить</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Модальное окно для добавления нового достижения -->
+<div id="addAchievementModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Добавить новое достижение</h1>
+        <form id='add_form' method="post">
+            {% csrf_token %}
+            {{ form.as_p }}  <!-- Используем as_p для лучшего отображения формы -->
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Получаем модальное окно
+        var modal = document.getElementById("addAchievementModal");
+
+        // Получаем кнопку, которая открывает модальное окно
+        var btn = document.getElementById("openModalBtn");
+
+        // Получаем элемент <span>, который закрывает модальное окно
+        var span = document.getElementsByClassName("close")[0];
+
+        // Когда пользователь нажимает на кнопку, открываем модальное окно
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Когда пользователь нажимает на <span> (x), закрываем модальное окно
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Когда пользователь нажимает в любом месте вне модального окна, закрываем его
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+{% endblock %}

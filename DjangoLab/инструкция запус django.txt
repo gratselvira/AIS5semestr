@@ -1,0 +1,18 @@
+
+cd iswork - идем в нужную папку где у нас manage.py
+
+создание:
+venv\Scripts\activate
+было выполнено pip install django
+
+python manage.py makemigrations
+python manage.py migrate
+
+
+
+запуск сервера:
+python manage.py runserver
+
+далее перейти по указанной ссылке на сайт. 
+
+
